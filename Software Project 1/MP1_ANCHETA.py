@@ -4,7 +4,7 @@
 #     [/] All inputs are integers
 #     [/] Valid dates
 #  2) Number crunch
-#     [ ] Compute total days
+#     [/] Compute total days
 #     [ ] Compute weekdays
 #     [ ] Compute leap years
 #     [ ] Compute holidays falling on weekdays
@@ -54,7 +54,7 @@ def get_user_input():
 
 
 def compute_total_days(start, end):
-    return 0
+    return (end - start).days + 1
 
 
 def compute_weekdays(start, end):
@@ -75,10 +75,14 @@ def compute_workdays(start, end):
 
 try:
     dr = get_user_input()
-    print(
-        f"\nStart:\n\tMonth: {dr.start.month}\n\tDay: {dr.start.day}\n\tYear: {dr.start.year}")
-    print(
-        f"End:\n\tMonth: {dr.end.month}\n\tDay: {dr.end.day}\n\tYear: {dr.end.year}")
+    # This is just to test if the values go to their proper place
+    # print(
+    #     f"\nStart:\n\tMonth: {dr.start.month}\n\tDay: {dr.start.day}\n\tYear: {dr.start.year}")
+    # print(
+    #     f"End:\n\tMonth: {dr.end.month}\n\tDay: {dr.end.day}\n\tYear: {dr.end.year}")
 except:
     print("\nInvalid input. Exiting Program.")
     exit(1)
+
+print(
+    f"\ntotal days from start date to end date: {compute_total_days(dr.start, dr.end)}")
