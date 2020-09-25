@@ -39,12 +39,18 @@ def get_user_input():
     end_date = tuple(map(int, [input("Enter end month: "), input(
         "Enter end day: "), input("Enter end year: ")]))
 
+    # Checks if the year is within the date limit
     if start_date[2] < 1971 or end_date[2] > 2020:
-        raise Exception("Input dates outside date limit.")
+        raise Exception("Input date/s outside date limit.")
 
-    start_date, end_date = start_date[-1:] + start_date[:-1], end_date[-1:] + end_date[:-1]
-    return DateRange(datetime.date(*start_date), datetime.date(*end_date))
+    # Cyclic rotation of elements (because I really really **really** want to unpack)
+    # Source: https://www.geeksforgeeks.org/python-shift-last-element-to-first-position-in-list/
+    start_date, end_date = start_date[-1:] + \
+        start_date[:-1], end_date[-1:] + end_date[:-1]
+
+    # As you can see unpacking makes the line smaller and more readable
     # return DateRange(datetime.date(start_date[2], start_date[0], start_date[1]), datetime.date(end_date[2], end_date[0], end_date[1]))
+    return DateRange(datetime.date(*start_date), datetime.date(*end_date))
 
 
 def compute_total_days(start, end):
