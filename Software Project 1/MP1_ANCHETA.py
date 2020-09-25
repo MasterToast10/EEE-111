@@ -6,7 +6,7 @@
 #  2) Number crunch
 #     [/] Compute total days
 #     [ ] Compute weekdays
-#     [ ] Compute leap years
+#     [/] Compute leap years
 #     [ ] Compute holidays falling on weekdays
 #         [ ] New Year
 #         [ ] Labor Day
@@ -34,8 +34,12 @@ def get_user_input():
     Returns:
         DateRange: The start and end dates as datetime objects (contained in a namedtuple)
     """
+    # Gets user input in M\nD\nYYYY format for the start date
+    # Uses map to convert string input to integers and stores the values in a tuple
     start_date = tuple(map(int, [input("Enter start month: "), input(
         "Enter start day: "), input("Enter start year: ")]))
+    # Gets user input in M\nD\nYYYY format for the end date
+    # Uses map to convert string input to integers and stores the values in a tuple
     end_date = tuple(map(int, [input("Enter end month: "), input(
         "Enter end day: "), input("Enter end year: ")]))
 
@@ -54,15 +58,62 @@ def get_user_input():
 
 
 def compute_total_days(start, end):
+    """Computes the total number of days between the start and end dates
+
+    Args:
+        start (datetime.date): The start date
+        end (datetime.date): The end date
+
+    Returns:
+        int: The total number of days between the start and end date
+    """
     return (end - start).days + 1
 
 
 def compute_weekdays(start, end):
     return 0
 
-
+# TODO: Ask if we consider if start/end date falls exactly on the Feb 29th of that year
 def compute_leap_years(start, end):
-    return 0
+    """Computes the total number of leap days between the start and end dates
+
+    Args:
+        start (datetime.date): The start date
+        end (datetime.date): The end date
+
+    Returns:
+        int: The total number of leap days between the start and end dates
+    """
+    # Generate the leap years between 1971 and 2020 inclusive    
+    leap_years = tuple(1972 + 4*x for x in range(13))
+
+    # Looks for the closest leap year greater than or equal to the start year
+    min_leap_year = 0
+    for leap_year in leap_years:
+        if leap_year >= start.year:
+            min_leap_year = leap_year
+            break
+
+    # Looks for the closest leap year less than or equal to the end year    
+    max_leap_year = 0
+    for leap_year in reversed(leap_years):
+        if leap_year <= end.year:
+            max_leap_year = leap_year
+            break
+
+    # Gets the number of leap years between the start and end year
+    # Note that if the leap year in between is just the same year it will zero out, thus the +1
+    leap_days_between = ((max_leap_year - min_leap_year) // 4) + 1
+
+    # If the start date occurs after Feb 29th of that year, we don't consider
+    if (start - datetime.date(min_leap_year, 2, 29)).days > 0:
+        leap_days_between -= 1
+
+    # If the end date occurs before Feb 29th of that year, we don't consider
+    if (datetime.date(max_leap_year, 2, 29) - end).days > 0:
+        leap_days_between -= 1
+
+    return leap_days_between
 
 
 def compute_holidays(start, end):
@@ -73,16 +124,23 @@ def compute_workdays(start, end):
     return 0
 
 
-try:
-    dr = get_user_input()
-    # This is just to test if the values go to their proper place
-    # print(
-    #     f"\nStart:\n\tMonth: {dr.start.month}\n\tDay: {dr.start.day}\n\tYear: {dr.start.year}")
-    # print(
-    #     f"End:\n\tMonth: {dr.end.month}\n\tDay: {dr.end.day}\n\tYear: {dr.end.year}")
-except:
-    print("\nInvalid input. Exiting Program.")
-    exit(1)
+if __name__ == "__main__":
+    # Getting user input and deals with errors caused by invalid output
+    try:
+        dr = get_user_input()
+        # This is just to test if the values go to their proper place
+        # print(
+        #     f"\nStart:\n\tMonth: {dr.start.month}\n\tDay: {dr.start.day}\n\tYear: {dr.start.year}")
+        # print(
+        #     f"End:\n\tMonth: {dr.end.month}\n\tDay: {dr.end.day}\n\tYear: {dr.end.year}")
+    except:
+        print("\nInvalid input. Exiting Program.")
+        exit(1)
 
-print(
-    f"\ntotal days from start date to end date: {compute_total_days(dr.start, dr.end)}")
+    # Computing the total number of days between start and end date
+    print("\ntotal days from start date to end date:",
+          compute_total_days(dr.start, dr.end))
+
+    # Computing the total additional days from leap years
+    print("\ntotal additional days from leap years:",
+          compute_leap_years(dr.start, dr.end))
