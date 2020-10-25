@@ -10,11 +10,11 @@
 #     [/] Compute weekdays
 #         [/] Compute weekends
 #     [/] Compute leap years
-#     [ ] Compute holidays falling on weekdays
-#         [ ] New Year
-#         [ ] Labor Day
-#         [ ] All Saint's Day
-#         [ ] Christmas
+#     [/] Compute holidays falling on weekdays
+#         [/] New Year
+#         [/] Labor Day
+#         [/] All Saint's Day
+#         [/] Christmas
 #     [ ] Compute work days
 
 # To abstract calendar math
@@ -100,7 +100,7 @@ def compute_weekends(start, end):
             weekends += 1
 
         # The loop checks the days between the start date (inclusive) and
-        #   the next occurence of the end date's day of the week 
+        #   the next occurence of the end date's day of the week
         if start.weekday() == end.weekday():
             break
 
@@ -174,7 +174,48 @@ def compute_leap_years(start, end):
 
 @lru_cache(maxsize=None)
 def compute_holidays(start, end):
-    return 0
+    """Computes the number of total holidays between the start and end dates
+
+    Args:
+        start (datetime.date): The start date
+        end (datetime.date): The end date
+
+    Returns:
+        dict: The number of relevant occurrences per holiday and the total number of holidays between the start and end dates
+    """
+    # The list of holidays and their given dates every year
+    holiday_dates = {
+        "new year holiday:": (1, 1),
+        "labor day holiday:": (5, 1),
+        "all saints day holiday:": (11, 1),
+        "christmas holiday:": (12, 25)
+    }
+
+    # Initialize the count of occurrences per holiday
+    holiday_counts = {holiday: 0 for holiday in holiday_dates.keys()}
+    # For loop to go through each holiday
+    for holiday in holiday_dates.keys():
+        # Sets the year for when counting the occurrences start
+        count_start = start.year
+        # If the holiday occurs before the start date, we disregard it
+        if (start - datetime.date(start.year, *holiday_dates[holiday])).days > 0:
+            count_start += 1
+        # Sets the year for when counting the occurrences end
+        count_end = end.year
+        # If the holiday occurs after the end date, we disregard it
+        if (datetime.date(end.year, *holiday_dates[holiday]) - end).days > 0:
+            count_end -= 1
+        # For loop to go through each year in the counting range
+        for year in range(count_start, count_end + 1):
+            # If the holiday falls on a weekday, we increment the occurrence count
+            if datetime.date(year, *holiday_dates[holiday]).weekday() < 5:
+                holiday_counts[holiday] += 1
+
+    # The total number of holidays is the sum of the counts of each holiday
+    holiday_counts["total holidays:"] = sum(holiday_counts.values())
+
+    # Returns the dictionary with complete counts
+    return holiday_counts
 
 
 @lru_cache(maxsize=None)
@@ -205,3 +246,10 @@ if __name__ == "__main__":
     # Computing the total number of weekdays
     print("\ntotal days without weekends:",
           compute_weekdays(dr.start, dr.end))
+
+    # Extra line in format
+    print()
+
+    # Computing the total number of holidays
+    for holiday, count in compute_holidays(dr.start, dr.end).items():
+        print(holiday, count)
