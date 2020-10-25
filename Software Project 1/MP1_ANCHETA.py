@@ -15,10 +15,12 @@
 #         [ ] Christmas
 #     [ ] Compute work days
 
+# To abstract calendar math
 import datetime
+# To memoize commonly used functions
+from functools import lru_cache
+# For syntactic sugar and to make the range immutable
 from collections import namedtuple
-
-
 DateRange = namedtuple("DateRange", ["start", "end"])
 
 
@@ -37,11 +39,13 @@ def get_user_input():
     """
     # Gets user input in M\nD\nYYYY format for the start date
     # Uses map to convert string input to integers and stores the values in a tuple
-    start_instrings = ["Enter start month: ", "Enter start day: ", "Enter start year: "]
+    start_instrings = ["Enter start month: ",
+                       "Enter start day: ", "Enter start year: "]
     start_date = tuple(int(input(s)) for s in start_instrings)
     # Gets user input in M\nD\nYYYY format for the end date
     # Uses map to convert string input to integers and stores the values in a tuple
-    end_instrings = ["Enter end month: ", "Enter end day: ", "Enter end year: "]
+    end_instrings = ["Enter end month: ",
+                     "Enter end day: ", "Enter end year: "]
     end_date = tuple(int(input(s)) for s in end_instrings)
 
     # Checks if each year is within the date limit
@@ -58,6 +62,7 @@ def get_user_input():
     return DateRange(datetime.date(*start_date), datetime.date(*end_date))
 
 
+@lru_cache
 def compute_total_days(start, end):
     """Computes the total number of days between the start and end dates
 
@@ -71,13 +76,17 @@ def compute_total_days(start, end):
     return (end - start).days + 1
 
 
+@lru_cache
 def compute_weekends(start, end):
     return 0
 
 
+@lru_cache
 def compute_weekdays(start, end):
     return 0
 
+
+@lru_cache
 # TODO: Ask if we consider if start/end date falls exactly on the Feb 29th of that year
 def compute_leap_years(start, end):
     """Computes the total number of leap days between the start and end dates
@@ -89,7 +98,7 @@ def compute_leap_years(start, end):
     Returns:
         int: The total number of leap days between the start and end dates
     """
-    # Generate the leap years between 1971 and 2020 inclusive    
+    # Generate the leap years between 1971 and 2020 inclusive
     leap_years = tuple(1972 + 4*x for x in range(13))
 
     # Looks for the closest leap year greater than or equal to the start year
@@ -99,7 +108,7 @@ def compute_leap_years(start, end):
             min_leap_year = leap_year
             break
 
-    # Looks for the closest leap year less than or equal to the end year    
+    # Looks for the closest leap year less than or equal to the end year
     max_leap_year = 0
     for leap_year in reversed(leap_years):
         if leap_year <= end.year:
@@ -121,10 +130,12 @@ def compute_leap_years(start, end):
     return leap_days_between
 
 
+@lru_cache
 def compute_holidays(start, end):
     return 0
 
 
+@lru_cache
 def compute_workdays(start, end):
     return 0
 
