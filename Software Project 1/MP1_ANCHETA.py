@@ -15,7 +15,7 @@
 #         [/] Labor Day
 #         [/] All Saint's Day
 #         [/] Christmas
-#     [ ] Compute work days
+#     [/] Compute work days
 
 # To abstract calendar math
 import datetime
@@ -174,7 +174,7 @@ def compute_leap_years(start, end):
 
 @lru_cache(maxsize=None)
 def compute_holidays(start, end):
-    """Computes the number of total holidays between the start and end dates
+    """Computes the total number of holidays between the start and end dates
 
     Args:
         start (datetime.date): The start date
@@ -220,7 +220,17 @@ def compute_holidays(start, end):
 
 @lru_cache(maxsize=None)
 def compute_workdays(start, end):
-    return 0
+    """Computes the total number of workdays between the start and end dates
+
+    Args:
+        start (datetime.date): The start date
+        end (datetime.date): The end date
+
+    Returns:
+        int: The total number of workdays between the start and end dates
+    """
+    # Subtracts the total number of holidays from the total number of weekdays
+    return compute_weekdays(start, end) - compute_holidays(start, end)["total holidays:"]
 
 
 if __name__ == "__main__":
@@ -253,3 +263,7 @@ if __name__ == "__main__":
     # Computing the total number of holidays
     for holiday, count in compute_holidays(dr.start, dr.end).items():
         print(holiday, count)
+
+    # Computing the total number of working days
+    print("\ntotal working days:",
+          compute_workdays(dr.start, dr.end))
