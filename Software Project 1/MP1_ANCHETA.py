@@ -6,7 +6,7 @@
 #  2) Number crunch
 #     [/] Compute total days
 #     [ ] Compute weekdays
-#         [ ] Compute weekends
+#         [/] Compute weekends
 #     [/] Compute leap years
 #     [ ] Compute holidays falling on weekdays
 #         [ ] New Year
@@ -19,7 +19,7 @@
 import datetime
 # To memoize commonly used functions
 from functools import lru_cache
-# For syntactic sugar and to make the range immutable
+# For syntactic sugar and to make the date range immutable
 from collections import namedtuple
 DateRange = namedtuple("DateRange", ["start", "end"])
 
@@ -71,14 +71,44 @@ def compute_total_days(start, end):
         end (datetime.date): The end date
 
     Returns:
-        int: The total number of days between the start and end date
+        int: The total number of days between the start and end dates
     """
     return (end - start).days + 1
 
 
 @lru_cache
 def compute_weekends(start, end):
-    return 0
+    """Computes the total number of weekend days
+
+    Args:
+        start (datetime.date): The start date
+        end (datetime.date): The end date
+
+    Returns:
+        int: The total number of weekend days between the start and end dates
+    """
+    # Initialize the weekends counter
+    weekends = 0
+
+    # Do-while loop (to check the start date falls on a weekend too)
+    while True:
+        # Check if the day falls on a weekend
+        if start.weekday() == 5 or start.weekday() == 6:
+            weekends += 1
+
+        # The loop checks the days between the start date (inclusive) and
+        #   the next occurence of the end date weekday
+        if start.weekday() == end.weekday():
+            break
+
+        # Increment the start date by one day
+        start += datetime.timedelta(days=1)
+
+    # Once the start date and the end date fall on the same weekday,
+    #   we can just find the number of weeks between them and multiply
+    #   by two
+    weekends += ((end - start).days // 7) * 2
+    return weekends
 
 
 @lru_cache
@@ -144,14 +174,9 @@ if __name__ == "__main__":
     # Getting user input and deals with errors caused by invalid output
     try:
         dr = get_user_input()
-        # This is just to test if the values go to their proper place
-        # print(
-        #     f"\nStart:\n\tMonth: {dr.start.month}\n\tDay: {dr.start.day}\n\tYear: {dr.start.year}")
-        # print(
-        #     f"End:\n\tMonth: {dr.end.month}\n\tDay: {dr.end.day}\n\tYear: {dr.end.year}")
     except:
         print("\nInvalid input. Exiting Program.")
-        exit(1)
+        exit()
 
     # Computing the total number of days between start and end date
     print("\ntotal days from start date to end date:",
@@ -160,3 +185,7 @@ if __name__ == "__main__":
     # Computing the total additional days from leap years
     print("\ntotal additional days from leap years:",
           compute_leap_years(dr.start, dr.end))
+
+    # Computing the total number of weekend days
+    print("\ntotal weekends:",
+          compute_weekends(dr.start, dr.end))
