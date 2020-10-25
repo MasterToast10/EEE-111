@@ -75,6 +75,7 @@ def compute_total_days(start, end):
     Returns:
         int: The total number of days between the start and end dates
     """
+    # Use the datetime module to subtract the dates (+1 if inclusive)
     return (end - start).days + 1
 
 
@@ -99,14 +100,14 @@ def compute_weekends(start, end):
             weekends += 1
 
         # The loop checks the days between the start date (inclusive) and
-        #   the next occurence of the end date weekday
+        #   the next occurence of the end date's day of the week 
         if start.weekday() == end.weekday():
             break
 
         # Increment the start date by one day
         start += datetime.timedelta(days=1)
 
-    # Once the start date and the end date fall on the same weekday,
+    # Once the start date and the end date fall on the same day of the week,
     #   we can just find the number of weeks between them and multiply
     #   by two
     weekends += ((end - start).days // 7) * 2
@@ -129,7 +130,6 @@ def compute_weekdays(start, end):
 
 
 @lru_cache(maxsize=None)
-# TODO: Ask if we consider if start/end date falls exactly on the Feb 29th of that year
 def compute_leap_years(start, end):
     """Computes the total number of leap days between the start and end dates
 
