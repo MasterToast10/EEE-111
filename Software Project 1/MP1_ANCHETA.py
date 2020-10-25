@@ -6,6 +6,7 @@
 #  2) Number crunch
 #     [/] Compute total days
 #     [ ] Compute weekdays
+#         [ ] Compute weekends
 #     [/] Compute leap years
 #     [ ] Compute holidays falling on weekdays
 #         [ ] New Year
@@ -36,14 +37,14 @@ def get_user_input():
     """
     # Gets user input in M\nD\nYYYY format for the start date
     # Uses map to convert string input to integers and stores the values in a tuple
-    start_date = tuple(map(int, [input("Enter start month: "), input(
-        "Enter start day: "), input("Enter start year: ")]))
+    start_instrings = ["Enter start month: ", "Enter start day: ", "Enter start year: "]
+    start_date = tuple(int(input(s)) for s in start_instrings)
     # Gets user input in M\nD\nYYYY format for the end date
     # Uses map to convert string input to integers and stores the values in a tuple
-    end_date = tuple(map(int, [input("Enter end month: "), input(
-        "Enter end day: "), input("Enter end year: ")]))
+    end_instrings = ["Enter end month: ", "Enter end day: ", "Enter end year: "]
+    end_date = tuple(int(input(s)) for s in end_instrings)
 
-    # Checks if the year is within the date limit
+    # Checks if each year is within the date limit
     if start_date[2] < 1971 or end_date[2] > 2020:
         raise Exception("Input date/s outside date limit.")
 
@@ -68,6 +69,10 @@ def compute_total_days(start, end):
         int: The total number of days between the start and end date
     """
     return (end - start).days + 1
+
+
+def compute_weekends(start, end):
+    return 0
 
 
 def compute_weekdays(start, end):
