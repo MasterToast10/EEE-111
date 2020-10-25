@@ -3,3 +3,5 @@ total days from start date to end date: 4686
 total additional days from leap years: 3
 
 total weekends: 1339
+
+total days without weekends: 3347

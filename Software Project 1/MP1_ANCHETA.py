@@ -1,3 +1,5 @@
+#!/bin/python
+
 # Rick's Great Plan for Success
 #  1) Validate date range
 #     [/] Within date limit
@@ -5,7 +7,7 @@
 #     [/] Valid dates
 #  2) Number crunch
 #     [/] Compute total days
-#     [ ] Compute weekdays
+#     [/] Compute weekdays
 #         [/] Compute weekends
 #     [/] Compute leap years
 #     [ ] Compute holidays falling on weekdays
@@ -62,7 +64,7 @@ def get_user_input():
     return DateRange(datetime.date(*start_date), datetime.date(*end_date))
 
 
-@lru_cache
+@lru_cache(maxsize=None)
 def compute_total_days(start, end):
     """Computes the total number of days between the start and end dates
 
@@ -76,9 +78,9 @@ def compute_total_days(start, end):
     return (end - start).days + 1
 
 
-@lru_cache
+@lru_cache(maxsize=None)
 def compute_weekends(start, end):
-    """Computes the total number of weekend days
+    """Computes the total number of weekend days between the start and end dates
 
     Args:
         start (datetime.date): The start date
@@ -111,12 +113,22 @@ def compute_weekends(start, end):
     return weekends
 
 
-@lru_cache
+@lru_cache(maxsize=None)
 def compute_weekdays(start, end):
-    return 0
+    """Computes the total number of weekdays between the start and end dates
+
+    Args:
+        start (datetime.date): The start date
+        end (datetime.date): The end date
+
+    Returns:
+        int: The total number of weekdays between the start and end dates
+    """
+    # Subtracts the total number of weekend days from the total number of days
+    return compute_total_days(start, end) - compute_weekends(start, end)
 
 
-@lru_cache
+@lru_cache(maxsize=None)
 # TODO: Ask if we consider if start/end date falls exactly on the Feb 29th of that year
 def compute_leap_years(start, end):
     """Computes the total number of leap days between the start and end dates
@@ -160,12 +172,12 @@ def compute_leap_years(start, end):
     return leap_days_between
 
 
-@lru_cache
+@lru_cache(maxsize=None)
 def compute_holidays(start, end):
     return 0
 
 
-@lru_cache
+@lru_cache(maxsize=None)
 def compute_workdays(start, end):
     return 0
 
@@ -189,3 +201,7 @@ if __name__ == "__main__":
     # Computing the total number of weekend days
     print("\ntotal weekends:",
           compute_weekends(dr.start, dr.end))
+
+    # Computing the total number of weekdays
+    print("\ntotal days without weekends:",
+          compute_weekdays(dr.start, dr.end))
