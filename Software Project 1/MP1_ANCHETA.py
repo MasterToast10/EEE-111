@@ -238,7 +238,7 @@ if __name__ == "__main__":
     try:
         dr = get_user_input()
     except:
-        print("\nInvalid input. Exiting Program.")
+        print("\nInvalid Input. Exiting Program.")
         exit()
 
     # Computing the total number of days between start and end date
