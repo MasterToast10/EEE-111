@@ -40,15 +40,17 @@ def get_user_input():
         DateRange: The start and end dates as datetime objects (contained in a namedtuple)
     """
     # Gets user input in M\nD\nYYYY format for the start date
-    # Uses map to convert string input to integers and stores the values in a tuple
     start_instrings = ["Enter start month: ",
                        "Enter start day: ", "Enter start year: "]
-    start_date = tuple(int(input(s)) for s in start_instrings)
+    raw_start_date = tuple(input(s) for s in start_instrings)
     # Gets user input in M\nD\nYYYY format for the end date
-    # Uses map to convert string input to integers and stores the values in a tuple
     end_instrings = ["Enter end month: ",
                      "Enter end day: ", "Enter end year: "]
-    end_date = tuple(int(input(s)) for s in end_instrings)
+    raw_end_date = tuple(input(s) for s in end_instrings)
+
+    # Uses map to convert string input to integers and stores the values in a tuple
+    start_date = tuple(map(int, raw_start_date))
+    end_date = tuple(map(int, raw_end_date))
 
     # Checks if each year is within the date limit
     if start_date[2] < 1971 or end_date[2] > 2020:
