@@ -53,7 +53,7 @@ def get_user_input():
     end_date = tuple(map(int, raw_end_date))
 
     # Checks if each year is within the date limit
-    if start_date[2] < 1971 or end_date[2] > 2020:
+    if not(1971 <= start_date[2] <= 2020 and 1971 <= end_date[2] <= 2020):
         raise Exception("Input date/s outside date limit.")
 
     # Cyclic rotation of elements (because I really really **really** want to unpack)
