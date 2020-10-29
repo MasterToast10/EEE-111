@@ -95,7 +95,7 @@ def compute_weekends(start, end):
     # Initialize the weekends counter
     weekends = 0
 
-    # Do-while loop (to check the start date falls on a weekend too)
+    # Do-while loop (to check if the start date falls on a weekend too)
     while True:
         # Check if the day falls on a weekend
         if start.weekday() == 5 or start.weekday() == 6:
@@ -236,7 +236,7 @@ def compute_workdays(start, end):
 
 
 if __name__ == "__main__":
-    # Getting user input and deals with errors caused by invalid output
+    # Getting user input and dealing with errors caused by invalid output
     try:
         dr = get_user_input()
     except:
